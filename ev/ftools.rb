@@ -1,4 +1,14 @@
-require "ftools"
+
+begin
+  require 'ftools' # apparently on some system ftools doesn't get loaded
+  $haveftools = true
+rescue LoadError
+  require 'fileutils'
+  puts "ftools not found.  Using FileUtils instead.."
+  $haveftools = false
+end
+
+
 
 class Dir
   def self.copy(from, to)
@@ -218,4 +228,29 @@ class File
 
     res
   end
+  def self.mkpath(dir)
+      if $haveftools
+        super(dir)    
+      else
+        FileUtils.mkpath(dir)
+      end
+  end
+
+  def self.makedirs(dir)
+      if $haveftools
+        super(dir)    
+      else
+        FileUtils.makedirs(dir)
+      end
+  end
+
+  def self.copy(from,to)
+      if $haveftools
+        super(from,to)    
+      else
+        FileUtils.cp(from,to)
+      end
+  end
+
 end
+
